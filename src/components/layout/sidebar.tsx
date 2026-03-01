@@ -2,14 +2,18 @@
 
 import type { LucideIcon } from "lucide-react"
 import {
+  ActivityIcon,
   BarChart3Icon,
   BellIcon,
   BuildingIcon,
+  CpuIcon,
   DollarSignIcon,
   FileSpreadsheetIcon,
   FileTextIcon,
   GaugeIcon,
   HomeIcon,
+  LeafIcon,
+  ScrollTextIcon,
   SettingsIcon,
 } from "lucide-react"
 import Link from "next/link"
@@ -39,6 +43,10 @@ const navigationItems: NavigationItem[] = [
   { href: "/data", icon: FileSpreadsheetIcon, label: "데이터 입력" },
   { href: "/costs", icon: DollarSignIcon, label: "비용 관리" },
   { href: "/comparison", icon: BarChart3Icon, label: "사업장 비교" },
+  { href: "/carbon", icon: LeafIcon, label: "탄소 배출" },
+  { href: "/predictions", icon: ActivityIcon, label: "AI 예측" },
+  { href: "/regulations", icon: ScrollTextIcon, label: "법규 보고서" },
+  { href: "/iot", icon: CpuIcon, label: "IoT 관리" },
   { href: "/reports", icon: FileTextIcon, label: "리포트" },
   { href: "/alerts", icon: BellIcon, label: "알림" },
   { href: "/settings", icon: SettingsIcon, label: "설정" },

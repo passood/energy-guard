@@ -112,6 +112,81 @@ export interface DashboardPreference {
   updated_at: string
 }
 
+// Phase 3 엔티티
+
+export interface EmissionFactor {
+  [key: string]: unknown
+  id: string
+  energy_type: EnergyType
+  factor_value: number
+  factor_unit: string
+  year: number
+  source: string
+  created_at: string
+}
+
+export interface CarbonEmission {
+  [key: string]: unknown
+  id: string
+  site_id: string
+  meter_id: string
+  period_start: string
+  period_end: string
+  energy_type: EnergyType
+  energy_amount: number
+  emission_factor_id: string
+  emission_value: number
+  created_at: string
+}
+
+export interface ReductionTarget {
+  [key: string]: unknown
+  id: string
+  site_id: string
+  target_year: number
+  base_year: number
+  base_emission: number
+  target_emission: number
+  target_reduction_pct: number
+  description: string | null
+  created_at: string
+}
+
+export type DeviceType = "sensor" | "gateway"
+export type IotProtocol = "rest" | "mqtt"
+
+export interface IotDevice {
+  [key: string]: unknown
+  id: string
+  site_id: string
+  meter_id: string | null
+  device_name: string
+  device_type: DeviceType
+  protocol: IotProtocol
+  api_key: string
+  last_seen_at: string | null
+  is_active: boolean
+  created_at: string
+}
+
+export type AnomalyType = "spike" | "drop" | "pattern_change"
+export type SeverityLevel = "low" | "medium" | "high"
+
+export interface AnomalyDetection {
+  [key: string]: unknown
+  id: string
+  meter_id: string
+  detected_at: string
+  anomaly_type: AnomalyType
+  severity: SeverityLevel
+  expected_value: number
+  actual_value: number
+  z_score: number
+  description: string
+  is_acknowledged: boolean
+  created_at: string
+}
+
 // Supabase Database 타입 (자동 생성 대체용)
 export interface Database {
   public: {
@@ -162,6 +237,36 @@ export interface Database {
         Row: DashboardPreference
         Insert: Omit<DashboardPreference, "id" | "created_at" | "updated_at"> & { id?: string; created_at?: string; updated_at?: string }
         Update: Partial<Omit<DashboardPreference, "id">>
+        Relationships: []
+      }
+      emission_factors: {
+        Row: EmissionFactor
+        Insert: Omit<EmissionFactor, "id" | "created_at"> & { id?: string; created_at?: string }
+        Update: Partial<Omit<EmissionFactor, "id">>
+        Relationships: []
+      }
+      carbon_emissions: {
+        Row: CarbonEmission
+        Insert: Omit<CarbonEmission, "id" | "created_at"> & { id?: string; created_at?: string }
+        Update: Partial<Omit<CarbonEmission, "id">>
+        Relationships: []
+      }
+      reduction_targets: {
+        Row: ReductionTarget
+        Insert: Omit<ReductionTarget, "id" | "created_at"> & { id?: string; created_at?: string }
+        Update: Partial<Omit<ReductionTarget, "id">>
+        Relationships: []
+      }
+      iot_devices: {
+        Row: IotDevice
+        Insert: Omit<IotDevice, "id" | "created_at"> & { id?: string; created_at?: string }
+        Update: Partial<Omit<IotDevice, "id">>
+        Relationships: []
+      }
+      anomaly_detections: {
+        Row: AnomalyDetection
+        Insert: Omit<AnomalyDetection, "id" | "created_at"> & { id?: string; created_at?: string }
+        Update: Partial<Omit<AnomalyDetection, "id">>
         Relationships: []
       }
     }
