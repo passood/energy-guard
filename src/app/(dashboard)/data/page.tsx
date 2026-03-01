@@ -122,7 +122,7 @@ export default function DataInputPage() {
   }
 
   return (
-    <main className="mx-auto w-full max-w-3xl space-y-6 p-6">
+    <main className="mx-auto w-full max-w-3xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
       <div className="space-y-3">
         <h1 className="text-2xl font-semibold">에너지 데이터 입력</h1>
         <p className="text-muted-foreground text-sm">

@@ -26,7 +26,7 @@ const buildingTypeOptions: BuildingType[] = ["office", "factory", "commercial", 
 
 function LoadingSkeleton() {
   return (
-    <div className="mx-auto w-full max-w-3xl space-y-6">
+    <div className="mx-auto w-full max-w-3xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
       <div className="space-y-2">
         <div className="bg-muted h-7 w-48 animate-pulse rounded-md" />
         <div className="bg-muted h-4 w-80 animate-pulse rounded-md" />
@@ -137,7 +137,7 @@ export default function SiteDetailPage() {
 
   if (!site) {
     return (
-      <div className="mx-auto w-full max-w-3xl space-y-4">
+      <div className="mx-auto w-full max-w-3xl space-y-4 px-4 py-6 sm:px-6 lg:px-8">
         <h1 className="text-2xl font-semibold">사업장 상세/수정</h1>
         <p className="text-destructive text-sm">{error ?? "사업장 정보를 찾을 수 없습니다."}</p>
         <Button asChild variant="outline">
@@ -148,7 +148,7 @@ export default function SiteDetailPage() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-3xl space-y-6">
+    <div className="mx-auto w-full max-w-3xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
       <div className="space-y-1">
         <h1 className="text-2xl font-semibold">사업장 상세/수정</h1>
         <p className="text-muted-foreground text-sm">사업장 정보를 수정하거나 삭제할 수 있습니다.</p>

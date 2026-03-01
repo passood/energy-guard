@@ -2,11 +2,15 @@
 
 import type { LucideIcon } from "lucide-react"
 import {
+  BarChart3Icon,
   BellIcon,
   BuildingIcon,
+  DollarSignIcon,
   FileSpreadsheetIcon,
+  FileTextIcon,
   GaugeIcon,
   HomeIcon,
+  SettingsIcon,
 } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
@@ -33,7 +37,11 @@ const navigationItems: NavigationItem[] = [
   { href: "/sites", icon: BuildingIcon, label: "사업장 관리" },
   { href: "/meters", icon: GaugeIcon, label: "계측기 관리" },
   { href: "/data", icon: FileSpreadsheetIcon, label: "데이터 입력" },
+  { href: "/costs", icon: DollarSignIcon, label: "비용 관리" },
+  { href: "/comparison", icon: BarChart3Icon, label: "사업장 비교" },
+  { href: "/reports", icon: FileTextIcon, label: "리포트" },
   { href: "/alerts", icon: BellIcon, label: "알림" },
+  { href: "/settings", icon: SettingsIcon, label: "설정" },
 ]
 
 function isActivePath(pathname: string, href: string): boolean {

@@ -36,5 +36,24 @@ export const DATA_SOURCES = {
   api: "API 연동",
 } as const
 
+// Phase 2 상수
+
+export const RATE_TYPES = {
+  industrial_a: "산업용(갑)",
+  industrial_b: "산업용(을)",
+  general: "일반용",
+  educational: "교육용",
+  other: "기타",
+} as const
+
+export const WIDGET_TYPES = {
+  summary: "요약 카드",
+  usage_line: "사용량 추이",
+  usage_bar: "에너지원별 사용량",
+  yoy_comparison: "전년 동기 대비",
+  cost_summary: "비용 요약",
+  site_comparison: "사업장 비교",
+} as const
+
 // 엑셀 업로드 제한
 export const MAX_EXCEL_FILE_SIZE = 10 * 1024 * 1024 // 10MB

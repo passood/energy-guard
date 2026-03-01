@@ -187,7 +187,7 @@ export default function MeterDetailPage() {
 
   if (loading) {
     return (
-      <div className="mx-auto flex w-full max-w-2xl flex-col gap-6 px-4 py-8 sm:px-6 lg:px-8">
+      <div className="mx-auto flex w-full max-w-2xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8">
         <div className="space-y-2">
           <div className="h-8 w-40 animate-pulse rounded-md bg-zinc-200" />
           <div className="h-4 w-80 animate-pulse rounded-md bg-zinc-100" />
@@ -211,7 +211,7 @@ export default function MeterDetailPage() {
 
   if (!meter) {
     return (
-      <div className="mx-auto flex w-full max-w-2xl flex-col gap-6 px-4 py-8 sm:px-6 lg:px-8">
+      <div className="mx-auto flex w-full max-w-2xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8">
         <Card>
           <CardHeader>
             <CardTitle>계측기 정보를 불러올 수 없습니다</CardTitle>
@@ -230,7 +230,7 @@ export default function MeterDetailPage() {
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-2xl flex-col gap-6 px-4 py-8 sm:px-6 lg:px-8">
+    <div className="mx-auto flex w-full max-w-2xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8">
       <section>
         <h1 className="text-2xl font-semibold tracking-tight">계측기 상세/수정</h1>
         <p className="text-muted-foreground mt-2 text-sm">

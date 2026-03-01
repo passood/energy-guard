@@ -1,8 +1,10 @@
 import { differenceInCalendarDays, startOfMonth } from "date-fns"
 import { AlertTriangle, Building2, Gauge, Zap } from "lucide-react"
 import { getDashboardSummary, getDailyUsage, getYearOverYearUsage } from "./actions"
+import { getDashboardPreference } from "./dashboard-actions"
 import { SummaryCard } from "@/components/charts/summary-card"
 import { DashboardCharts } from "@/components/charts/dashboard-charts"
+import { WidgetSettings } from "@/components/charts/widget-settings"
 import { Card, CardContent } from "@/components/ui/card"
 import {
   Select,
@@ -11,8 +13,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { ENERGY_TYPES } from "@/lib/constants"
+import { ENERGY_TYPES, WIDGET_TYPES } from "@/lib/constants"
 import { createClient } from "@/lib/supabase/server"
+import type { WidgetType } from "@/types/database"
 
 interface DashboardPageProps {
   searchParams?: Promise<Record<string, string | string[] | undefined>>
@@ -22,6 +25,9 @@ type SiteOption = {
   id: string
   name: string
 }
+
+const DEFAULT_WIDGET_ORDER = Object.keys(WIDGET_TYPES) as WidgetType[]
+const WIDGET_TYPE_SET = new Set<WidgetType>(DEFAULT_WIDGET_ORDER)
 
 function getSiteIdFromSearchParams(
   params: Record<string, string | string[] | undefined>
@@ -37,6 +43,54 @@ function getSiteIdFromSearchParams(
   return selectedValue
 }
 
+function normalizeWidgetOrder(widgetOrder: WidgetType[] | undefined): WidgetType[] {
+  if (!widgetOrder || widgetOrder.length === 0) {
+    return DEFAULT_WIDGET_ORDER
+  }
+
+  const uniqueWidgetOrder: WidgetType[] = []
+  const includedWidgets = new Set<WidgetType>()
+
+  widgetOrder.forEach((widget) => {
+    if (!WIDGET_TYPE_SET.has(widget) || includedWidgets.has(widget)) {
+      return
+    }
+
+    includedWidgets.add(widget)
+    uniqueWidgetOrder.push(widget)
+  })
+
+  DEFAULT_WIDGET_ORDER.forEach((widget) => {
+    if (includedWidgets.has(widget)) {
+      return
+    }
+
+    uniqueWidgetOrder.push(widget)
+  })
+
+  return uniqueWidgetOrder
+}
+
+function normalizeHiddenWidgets(hiddenWidgets: WidgetType[] | undefined): WidgetType[] {
+  if (!hiddenWidgets || hiddenWidgets.length === 0) {
+    return []
+  }
+
+  const uniqueHiddenWidgets: WidgetType[] = []
+  const hiddenWidgetSet = new Set<WidgetType>()
+
+  hiddenWidgets.forEach((widget) => {
+    if (!WIDGET_TYPE_SET.has(widget) || hiddenWidgetSet.has(widget)) {
+      return
+    }
+
+    hiddenWidgetSet.add(widget)
+    uniqueHiddenWidgets.push(widget)
+  })
+
+  return uniqueHiddenWidgets
+}
+
 export default async function DashboardPage({
   searchParams,
 }: DashboardPageProps) {
@@ -44,7 +98,8 @@ export default async function DashboardPage({
   const requestedSiteId = getSiteIdFromSearchParams(resolvedSearchParams)
   const supabase = await createClient()
 
-  const [summary, sitesResult] = await Promise.all([
+  const [dashboardPreference, summary, sitesResult] = await Promise.all([
+    getDashboardPreference(),
     getDashboardSummary(),
     supabase.from("sites").select("id, name").order("name"),
   ])
@@ -53,6 +108,9 @@ export default async function DashboardPage({
   const selectedSiteId = sites.some((site) => site.id === requestedSiteId)
     ? requestedSiteId
     : undefined
+  const widgetOrder = normalizeWidgetOrder(dashboardPreference?.widget_order)
+  const hiddenWidgets = normalizeHiddenWidgets(dashboardPreference?.hidden_widgets)
+  const showSummaryWidget = !hiddenWidgets.includes("summary")
 
   const today = new Date()
   const monthDays = differenceInCalendarDays(today, startOfMonth(today)) + 1
@@ -109,56 +167,62 @@ export default async function DashboardPage({
           </p>
         </div>
 
-        <form method="get" className="flex items-center gap-2">
-          <label htmlFor="siteId" className="text-sm font-medium whitespace-nowrap">
-            사업장 선택
-          </label>
-          <Select name="siteId" defaultValue={selectedSiteId ?? "all"}>
-            <SelectTrigger id="siteId" className="h-9 min-w-44">
-              <SelectValue placeholder="사업장 선택" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">전체 사업장</SelectItem>
-              {sites.map((site) => (
-                <SelectItem key={site.id} value={site.id}>
-                  {site.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <button
-            type="submit"
-            className="bg-primary text-primary-foreground h-9 rounded-md px-3 text-sm font-medium"
-          >
-            적용
-          </button>
-        </form>
+        <div className="flex flex-wrap items-center gap-2">
+          <WidgetSettings currentOrder={widgetOrder} hiddenWidgets={hiddenWidgets} />
+
+          <form method="get" className="flex items-center gap-2">
+            <label htmlFor="siteId" className="text-sm font-medium whitespace-nowrap">
+              사업장 선택
+            </label>
+            <Select name="siteId" defaultValue={selectedSiteId ?? "all"}>
+              <SelectTrigger id="siteId" className="h-9 min-w-44">
+                <SelectValue placeholder="사업장 선택" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">전체 사업장</SelectItem>
+                {sites.map((site) => (
+                  <SelectItem key={site.id} value={site.id}>
+                    {site.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <button
+              type="submit"
+              className="bg-primary text-primary-foreground h-9 rounded-md px-3 text-sm font-medium"
+            >
+              적용
+            </button>
+          </form>
+        </div>
       </header>
 
-      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <SummaryCard
-          title="사업장 수"
-          value={summary.totalSites}
-          icon={<Building2 className="size-5" />}
-        />
-        <SummaryCard
-          title="계측기 수"
-          value={summary.totalMeters}
-          icon={<Gauge className="size-5" />}
-        />
-        <SummaryCard
-          title="이번달 전력 사용량"
-          value={monthUsage.electricity}
-          unit={ENERGY_TYPES.electricity.unit}
-          icon={<Zap className="size-5" />}
-        />
-        <SummaryCard
-          title="미처리 알림"
-          value={summary.recentAlerts}
-          unit="건"
-          icon={<AlertTriangle className="size-5" />}
-        />
-      </section>
+      {showSummaryWidget ? (
+        <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <SummaryCard
+            title="사업장 수"
+            value={summary.totalSites}
+            icon={<Building2 className="size-5" />}
+          />
+          <SummaryCard
+            title="계측기 수"
+            value={summary.totalMeters}
+            icon={<Gauge className="size-5" />}
+          />
+          <SummaryCard
+            title="이번달 전력 사용량"
+            value={monthUsage.electricity}
+            unit={ENERGY_TYPES.electricity.unit}
+            icon={<Zap className="size-5" />}
+          />
+          <SummaryCard
+            title="미처리 알림"
+            value={summary.recentAlerts}
+            unit="건"
+            icon={<AlertTriangle className="size-5" />}
+          />
+        </section>
+      ) : null}
 
       {sites.length === 0 || !hasUsageData ? (
         <Card>
@@ -171,6 +235,8 @@ export default async function DashboardPage({
           dailyUsage={dailyUsage}
           barChartData={barChartData}
           yoyData={yoyData}
+          widgetOrder={widgetOrder}
+          hiddenWidgets={hiddenWidgets}
         />
       )}
     </main>

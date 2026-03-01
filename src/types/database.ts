@@ -83,6 +83,35 @@ export interface Alert {
   note: string | null
 }
 
+// Phase 2 엔티티
+
+export type RateType = "industrial_a" | "industrial_b" | "general" | "educational" | "other"
+
+export interface EnergyCost {
+  [key: string]: unknown
+  id: string
+  site_id: string
+  period_start: string
+  period_end: string
+  energy_type: EnergyType
+  amount_kwh: number
+  cost_krw: number
+  rate_type: RateType | null
+  created_at: string
+}
+
+export type WidgetType = "summary" | "usage_line" | "usage_bar" | "yoy_comparison" | "cost_summary" | "site_comparison"
+
+export interface DashboardPreference {
+  [key: string]: unknown
+  id: string
+  user_id: string
+  widget_order: WidgetType[]
+  hidden_widgets: WidgetType[]
+  created_at: string
+  updated_at: string
+}
+
 // Supabase Database 타입 (자동 생성 대체용)
 export interface Database {
   public: {
@@ -121,6 +150,18 @@ export interface Database {
         Row: Alert
         Insert: Omit<Alert, "id"> & { id?: string }
         Update: Partial<Omit<Alert, "id">>
+        Relationships: []
+      }
+      energy_costs: {
+        Row: EnergyCost
+        Insert: Omit<EnergyCost, "id" | "created_at"> & { id?: string; created_at?: string }
+        Update: Partial<Omit<EnergyCost, "id">>
+        Relationships: []
+      }
+      dashboard_preferences: {
+        Row: DashboardPreference
+        Insert: Omit<DashboardPreference, "id" | "created_at" | "updated_at"> & { id?: string; created_at?: string; updated_at?: string }
+        Update: Partial<Omit<DashboardPreference, "id">>
         Relationships: []
       }
     }

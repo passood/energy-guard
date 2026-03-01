@@ -77,7 +77,7 @@ export default async function AlertsPage() {
   const alerts = await getAlerts()
 
   return (
-    <div className="mx-auto w-full max-w-6xl space-y-6 px-6 py-8">
+    <main className="mx-auto w-full max-w-6xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
       <div className="space-y-2">
         <h1 className="text-2xl font-semibold tracking-tight">알림 관리</h1>
         <p className="text-muted-foreground text-sm">
@@ -185,6 +185,6 @@ export default async function AlertsPage() {
           </div>
         )}
       </section>
-    </div>
+    </main>
   )
 }

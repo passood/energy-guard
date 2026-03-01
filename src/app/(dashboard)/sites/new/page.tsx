@@ -44,7 +44,7 @@ export default function NewSitePage() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-3xl space-y-6">
+    <div className="mx-auto w-full max-w-3xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
       <div className="space-y-1">
         <h1 className="text-2xl font-semibold">사업장 등록</h1>
         <p className="text-muted-foreground text-sm">새로운 사업장 정보를 입력해주세요.</p>

@@ -18,7 +18,7 @@ export default async function SitesPage() {
   const sites = await getSites()
 
   return (
-    <div className="space-y-6">
+    <main className="mx-auto w-full max-w-7xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
       <div className="flex items-center justify-between gap-4">
         <div className="space-y-1">
           <h1 className="text-2xl font-semibold">사업장 관리</h1>
@@ -73,6 +73,6 @@ export default async function SitesPage() {
           )}
         </CardContent>
       </Card>
-    </div>
+    </main>
   )
 }
